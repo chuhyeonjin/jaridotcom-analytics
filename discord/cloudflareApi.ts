@@ -1,4 +1,5 @@
 import { gql, GraphQLClient } from 'graphql-request';
+import { getUTCISODateString, getUTCISODateTimeString } from './utils';
 
 const analyticsApiEndpoint = 'https://api.cloudflare.com/client/v4/graphql';
 
@@ -66,28 +67,6 @@ export class cloudflareApi {
     });
   }
 
-  private static getUTCISODateTimeString(date: Date): string {
-    const year = date.getUTCFullYear();
-    const month = this.zeroFill(date.getUTCMonth() + 1, 2);
-    const day = this.zeroFill(date.getUTCDate(), 2);
-    const hour = this.zeroFill(date.getUTCHours() + 1, 2);
-    const minute = this.zeroFill(date.getUTCMinutes() + 1, 2);
-    const second = this.zeroFill(date.getUTCSeconds() + 1, 2);
-
-    return `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
-  }
-
-  private static getUTCISODateString(date: Date): string {
-    const year = date.getUTCFullYear();
-    const month = this.zeroFill(date.getUTCMonth() + 1, 2);
-    const day = this.zeroFill(date.getUTCDate(), 2);
-    return `${year}-${month}-${day}`;
-  }
-
-  private static zeroFill(number: number, length: number) {
-    return ('0'.repeat(length) + number).slice(length * -1);
-  }
-
   private static responseToAnalytics(body: any, sinceDate: Date, untilDate: Date): cloudflareAnalytics {
     return {
       cacheRatio: body.sum.cachedBytes / body.sum.bytes,
@@ -107,8 +86,8 @@ export class cloudflareApi {
 
     const result = await this.graphqlClient.request(zoneAnalyticsForShortTime, {
       zoneTag: this.zoneId,
-      since: cloudflareApi.getUTCISODateTimeString(since),
-      until: cloudflareApi.getUTCISODateTimeString(until),
+      since: getUTCISODateTimeString(since),
+      until: getUTCISODateTimeString(until),
     });
 
     const body = result.viewer.zones[0].httpRequests1hGroups[0];
@@ -123,8 +102,8 @@ export class cloudflareApi {
 
     const result = await this.graphqlClient.request(zoneAnalyticsForLongTime, {
       zoneTag: this.zoneId,
-      since: cloudflareApi.getUTCISODateString(since),
-      until: cloudflareApi.getUTCISODateString(until),
+      since: getUTCISODateString(since),
+      until: getUTCISODateString(until),
     });
 
     const body = result.viewer.zones[0].httpRequests1dGroups[0];
@@ -139,8 +118,8 @@ export class cloudflareApi {
 
     const result = await this.graphqlClient.request(zoneAnalyticsForLongTime, {
       zoneTag: this.zoneId,
-      since: cloudflareApi.getUTCISODateString(since),
-      until: cloudflareApi.getUTCISODateString(until),
+      since: getUTCISODateString(since),
+      until: getUTCISODateString(until),
     });
 
     const body = result.viewer.zones[0].httpRequests1dGroups[0];

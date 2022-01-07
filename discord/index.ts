@@ -3,6 +3,7 @@ import * as nacl from 'tweetnacl';
 import { interaction, interactionType } from './types/interaction';
 import { interactionResponse, interactionResponseType } from './types/interactionResponse';
 import { cloudflareAnalytics, cloudflareApi } from './cloudflareApi';
+import { formatBytes } from './utils';
 
 const allowUsers = process.env['ALLOW_USERS'].split(',');
 const api = new cloudflareApi(
@@ -86,23 +87,23 @@ async function handleCommand(context: Context, req: interaction) {
               fields: [
                 {
                   name: '고유 방문자',
-                  value: analytics.uniqueVisitor + '명',
+                  value: `${analytics.uniqueVisitor.toLocaleString('ko-kr')} 명`,
                 },
                 {
                   name: '전송된 바이트',
-                  value: analytics.totalByte + 'Bytes',
+                  value: formatBytes(analytics.totalByte),
                 },
                 {
                   name: '캐시된 바이트',
-                  value: analytics.totalCachedByte + 'Bytes',
+                  value: formatBytes(analytics.totalCachedByte),
                 },
                 {
                   name: '총 요청',
-                  value: analytics.totalRequest + '회',
+                  value: `${analytics.uniqueVisitor.toLocaleString('ko-kr')} 회`,
                 },
                 {
                   name: '캐시된 비율',
-                  value: (analytics.cacheRatio * 100).toFixed(3) + '%',
+                  value: `${(analytics.cacheRatio * 100).toFixed(3)}%`,
                 },
               ],
             },
