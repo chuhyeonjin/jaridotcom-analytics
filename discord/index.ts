@@ -99,7 +99,7 @@ async function handleCommand(context: Context, req: interaction) {
                 },
                 {
                   name: '총 요청',
-                  value: `${analytics.uniqueVisitor.toLocaleString('ko-kr')} 회`,
+                  value: `${analytics.totalRequest.toLocaleString('ko-kr')} 회`,
                 },
                 {
                   name: '캐시된 비율',
